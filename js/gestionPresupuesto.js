@@ -6,7 +6,7 @@ let Gasto = {
     descripcion: "",
     valor: 0,
     mostrarGasto: function () {
-        console.log(`Gasto correspondiente a ${this.descripcion} con valor ${this.valor} €`);
+        return `Gasto correspondiente a ${this.descripcion} con valor ${this.valor} €`;
     },
     actualizarDescripcion: function (nuevaDescripcion){
         if(nuevaDescripcion!="")
@@ -19,25 +19,31 @@ let Gasto = {
             this.valor=nuevoValor;
         }
     }
-}
+};
 
 
 function actualizarPresupuesto(cantidad) {
     if (isNaN(cantidad) || cantidad < 0) {
+        console.log("El valor no es un número no negativo");
         return -1;
     } else {
         presupuesto = cantidad;
     }
+    return presupuesto;
 }
 
 function mostrarPresupuesto() {
-    console.log(`Tu presupuesto actual es de ${presupuesto} €`);
+    return `Tu presupuesto actual es de ${presupuesto} €`;
 }
 
 function CrearGasto(descripcion, cantidad) {
     if (isNaN(cantidad) || cantidad < 0) {
         cantidad=0;
     }
+    let gasto = new Gasto();
+    gasto.actualizarDescripcion(descripcion);
+    gasto.actualizarValor(cantidad);
+    return gasto;
 }
 
 // NO MODIFICAR A PARTIR DE AQUÍ: exportación de funciones y objetos creados para poder ejecutar los tests.
