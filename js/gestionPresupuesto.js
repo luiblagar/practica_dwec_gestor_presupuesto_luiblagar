@@ -33,7 +33,7 @@ function mostrarPresupuesto() {
 function CrearGasto(descripcion, valor, fecha, ...etiquetas) {
     this.descripcion = descripcion;
     this.valor = esNumeroPositivo(valor) ? valor : 0;
-    this.fecha = fecha;
+    this.fecha = isNaN(Date.parse(fecha)) ? new Date() : new Date(Date.parse(fecha));
     this.etiquetas = [];
 
     this.mostrarGasto = function () {
@@ -56,17 +56,26 @@ function CrearGasto(descripcion, valor, fecha, ...etiquetas) {
         }
     };
 
-    this.actualizarFecha = function (fecha) {
+    this.actualizarFecha = function (nuevaFecha) {
+        const fechaParseada = Date.parse(nuevaFecha);
+        if (!isNaN(fechaParseada)) {
+            this.fecha = new Date(fechaParseada);
+        }
+    };
+
+    this.anyadirEtiquetas = function (...valores) {
+        for (let valor of valores){
+            if (!this.etiquetas.includes(valor)){
+                this.etiquetas.push(valor);
+            }
+        }
+    };
+
+    this.borrarEtiquetas = function (...valores) {
 
     };
 
-    this.anyadirEtiquetas = function (...etiquetas) {
-
-    };
-
-    this.borrarEtiquetas=function(...etiquetas){
-
-    };
+    this.anyadirEtiquetas(...etiquetas);
 }
 
 function listarGastos() {
