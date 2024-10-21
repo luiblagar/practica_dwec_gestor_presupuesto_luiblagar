@@ -5,26 +5,20 @@ let presupuesto = 0;
 let Gasto = {
     descripcion: "",
     valor: 0,
-    mostrarGasto: function () {
-        return `Gasto correspondiente a ${this.descripcion} con valor ${this.valor} €`;
-    },
-    actualizarDescripcion: function (nuevaDescripcion){
-        if(nuevaDescripcion!="")
-        {
-            this.descripcion=nuevaDescripcion;
-        }
-    },
-    actualizarValor: function(nuevoValor){
-        if (isNaN(nuevoValor)==false && nuevoValor <= 0) {
-            this.valor=nuevoValor;
-        }
-    }
+    
 };
 
+function esNumeroPositivo(numero) {
+    if (isFinite(numero) && numero >= 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
 
 function actualizarPresupuesto(cantidad) {
-    if (isNaN(cantidad) || cantidad < 0) {
-        console.log("El valor no es un número no negativo");
+    if (!esNumeroPositivo(cantidad)) {
+        console.log(`El valor ${cantidad} no es válido. Debe ser un número no negativo`);
         return -1;
     } else {
         presupuesto = cantidad;
@@ -36,14 +30,25 @@ function mostrarPresupuesto() {
     return `Tu presupuesto actual es de ${presupuesto} €`;
 }
 
-function CrearGasto(descripcion, cantidad) {
-    if (isNaN(cantidad) || cantidad < 0) {
-        cantidad=0;
+function CrearGasto(descripcion, valor) {
+    this.descripcion=descripcion;
+    if (!esNumeroPositivo(valor)) {
+        valor = 0;
     }
-    let gasto = new Gasto();
-    gasto.actualizarDescripcion(descripcion);
-    gasto.actualizarValor(cantidad);
-    return gasto;
+    this.valor=valor;
+    this.mostrarGasto= function () {
+        return `Gasto correspondiente a ${this.descripcion} con valor ${this.valor} €`;
+    },
+    this.actualizarDescripcion= function (nuevaDescripcion) {
+        if (nuevaDescripcion != "") {
+            this.descripcion = nuevaDescripcion;
+        }
+    },
+    this.actualizarValor= function (nuevoValor) {
+        if (esNumeroPositivo(nuevoValor)) {
+            this.valor = nuevoValor;
+        }
+    }
 }
 
 // NO MODIFICAR A PARTIR DE AQUÍ: exportación de funciones y objetos creados para poder ejecutar los tests.
