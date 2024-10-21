@@ -2,6 +2,8 @@
 
 // Variable global
 let presupuesto = 0;
+let gastos = [];
+let idGasto = 0;
 
 // Funcion que comprueba que el valor introducido por parametro es un número positivo
 function esNumeroPositivo(numero) {
