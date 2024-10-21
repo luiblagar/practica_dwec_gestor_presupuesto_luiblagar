@@ -30,47 +30,63 @@ function mostrarPresupuesto() {
     return `Tu presupuesto actual es de ${presupuesto} €`;
 }
 
-function CrearGasto(descripcion, valor) {
+function CrearGasto(descripcion, valor, fecha, ...etiquetas) {
     this.descripcion = descripcion;
     this.valor = esNumeroPositivo(valor) ? valor : 0;
-    if (!esNumeroPositivo(valor)) {
-        valor = 0;
-    }
-    this.valor = valor;
+    this.fecha = fecha;
+    this.etiquetas = [];
 
     this.mostrarGasto = function () {
         return `Gasto correspondiente a ${this.descripcion} con valor ${this.valor} €`;
-    },
-        this.actualizarDescripcion = function (nuevaDescripcion) {
-            if (nuevaDescripcion != "") {
-                this.descripcion = nuevaDescripcion;
-            }
-        },
-        this.actualizarValor = function (nuevoValor) {
-            if (esNumeroPositivo(nuevoValor)) {
-                this.valor = nuevoValor;
-            }
+    };
+
+    this.mostrarGastoCompleto = function () {
+        return salida;
+    };
+
+    this.actualizarDescripcion = function (nuevaDescripcion) {
+        if (nuevaDescripcion != "") {
+            this.descripcion = nuevaDescripcion;
         }
+    };
+
+    this.actualizarValor = function (nuevoValor) {
+        if (esNumeroPositivo(nuevoValor)) {
+            this.valor = nuevoValor;
+        }
+    };
+
+    this.actualizarFecha = function (fecha) {
+
+    };
+
+    this.anyadirEtiquetas = function (...etiquetas) {
+
+    };
+
+    this.borrarEtiquetas=function(...etiquetas){
+
+    };
 }
 
-function listarGastos(){
+function listarGastos() {
+    return gastos;
+}
+
+function anyadirGasto() {
 
 }
 
-function anyadirGasto(){
+function borrarGasto() {
 
 }
 
-function borrarGasto(){
+function calcularTotalGastos() {
 
 }
 
-function calcularTotalGastos(){
+function calcularBalance() {
 
-}
-
-function calcularBalance(){
-    
 }
 
 // NO MODIFICAR A PARTIR DE AQUÍ: exportación de funciones y objetos creados para poder ejecutar los tests.
