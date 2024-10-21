@@ -2,13 +2,11 @@
 
 // Variable global
 let presupuesto = 0;
-let Gasto = {
-    descripcion: "",
-    valor: 0,
-    
-};
 
+// Funcion que comprueba que el valor introducido por parametro es un número positivo
 function esNumeroPositivo(numero) {
+    // Uso de isFinite en vez de isNaN o typeOf por que es más estricto que isNan y typeof ya que
+    // solo aceptará números finitos filtrando la posibilidad de NaN, Infinity o -Infinity
     if (isFinite(numero) && numero >= 0) {
         return true;
     } else {
@@ -31,24 +29,26 @@ function mostrarPresupuesto() {
 }
 
 function CrearGasto(descripcion, valor) {
-    this.descripcion=descripcion;
+    this.descripcion = descripcion;
+    this.valor = esNumeroPositivo(valor) ? valor : 0;
     if (!esNumeroPositivo(valor)) {
         valor = 0;
     }
-    this.valor=valor;
-    this.mostrarGasto= function () {
+    this.valor = valor;
+
+    this.mostrarGasto = function () {
         return `Gasto correspondiente a ${this.descripcion} con valor ${this.valor} €`;
     },
-    this.actualizarDescripcion= function (nuevaDescripcion) {
-        if (nuevaDescripcion != "") {
-            this.descripcion = nuevaDescripcion;
+        this.actualizarDescripcion = function (nuevaDescripcion) {
+            if (nuevaDescripcion != "") {
+                this.descripcion = nuevaDescripcion;
+            }
+        },
+        this.actualizarValor = function (nuevoValor) {
+            if (esNumeroPositivo(nuevoValor)) {
+                this.valor = nuevoValor;
+            }
         }
-    },
-    this.actualizarValor= function (nuevoValor) {
-        if (esNumeroPositivo(nuevoValor)) {
-            this.valor = nuevoValor;
-        }
-    }
 }
 
 // NO MODIFICAR A PARTIR DE AQUÍ: exportación de funciones y objetos creados para poder ejecutar los tests.
