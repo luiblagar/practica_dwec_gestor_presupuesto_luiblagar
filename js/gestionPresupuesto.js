@@ -33,14 +33,22 @@ function mostrarPresupuesto() {
 function CrearGasto(descripcion, valor, fecha, ...etiquetas) {
     this.descripcion = descripcion;
     this.valor = esNumeroPositivo(valor) ? valor : 0;
-    this.fecha = isNaN(Date.parse(fecha)) ? new Date() : new Date(Date.parse(fecha));
+    this.fecha = isNaN(Date.parse(fecha)) ? Date.now() : Date.parse(fecha);
     this.etiquetas = [];
+    //this.etiquetas = this.anyadirEtiquetas(...etiquetas);
+    // Establecer directamente las etiquetas sin poner una array en vacio no pasa los test
 
     this.mostrarGasto = function () {
         return `Gasto correspondiente a ${this.descripcion} con valor ${this.valor} €`;
     };
 
     this.mostrarGastoCompleto = function () {
+        let salida = `Gasto correspondiente a ${this.descripcion} con valor ${valor} €.
+Fecha: ${new Date(this.fecha).toLocaleString()}
+Etiquetas:\n`;
+        for (let etiqueta of this.etiquetas) {
+            salida += `- ${etiqueta}\n`
+        }
         return salida;
     };
 
@@ -59,19 +67,25 @@ function CrearGasto(descripcion, valor, fecha, ...etiquetas) {
     this.actualizarFecha = function (nuevaFecha) {
         const fechaParseada = Date.parse(nuevaFecha);
         if (!isNaN(fechaParseada)) {
-            this.fecha = new Date(fechaParseada);
+            this.fecha = fechaParseada;
         }
     };
 
     this.anyadirEtiquetas = function (...valores) {
-        for (let valor of valores){
-            if (!this.etiquetas.includes(valor)){
+        for (let valor of valores) {
+            if (!this.etiquetas.includes(valor)) {
                 this.etiquetas.push(valor);
             }
         }
     };
 
     this.borrarEtiquetas = function (...valores) {
+        for (let valor of valores) {
+            const posicion = this.etiquetas.indexOf(valor);
+            if (posicion >= 0) {
+                this.etiquetas.splice(posicion, 1);
+            }
+        }
 
     };
 
