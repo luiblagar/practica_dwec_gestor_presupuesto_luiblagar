@@ -97,13 +97,16 @@ function listarGastos() {
 }
 
 function anyadirGasto(gasto) {
-    gasto.id=idGasto;
+    gasto.id = idGasto;
     idGasto++;
     gastos.push(gasto);
 }
 
-function borrarGasto() {
-
+function borrarGasto(id) {
+    const indice = gastos.findIndex(gasto => gasto.id == id);
+    if (indice >= 0) {
+        gastos.splice(indice, 1);
+    }
 }
 
 function calcularTotalGastos() {
