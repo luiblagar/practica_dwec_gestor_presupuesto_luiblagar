@@ -31,6 +31,7 @@ function mostrarPresupuesto() {
 }
 
 function CrearGasto(descripcion, valor, fecha, ...etiquetas) {
+    // Propiedades
     this.descripcion = descripcion;
     this.valor = esNumeroPositivo(valor) ? valor : 0;
     this.fecha = isNaN(Date.parse(fecha)) ? Date.now() : Date.parse(fecha);
@@ -38,6 +39,7 @@ function CrearGasto(descripcion, valor, fecha, ...etiquetas) {
     //this.etiquetas = this.anyadirEtiquetas(...etiquetas);
     // Establecer directamente las etiquetas sin poner una array en vacio no pasa los test
 
+    // Metodos
     this.mostrarGasto = function () {
         return `Gasto correspondiente a ${this.descripcion} con valor ${this.valor} €`;
     };
@@ -89,6 +91,11 @@ Etiquetas:\n`;
 
     };
 
+    this.obtenerPeriodoAgrupacion = function(periodo){
+        
+    }
+
+    // Inicialización
     this.anyadirEtiquetas(...etiquetas);
 }
 
@@ -121,6 +128,14 @@ function calcularBalance() {
     return presupuesto - calcularTotalGastos();
 }
 
+function filtrarGastos(){
+
+}
+
+function agruparGastos(){
+
+}
+
 // NO MODIFICAR A PARTIR DE AQUÍ: exportación de funciones y objetos creados para poder ejecutar los tests.
 // Las funciones y objetos deben tener los nombres que se indican en el enunciado
 // Si al obtener el código de una práctica se genera un conflicto, por favor incluye todo el código que aparece aquí debajo
@@ -132,5 +147,7 @@ export {
     anyadirGasto,
     borrarGasto,
     calcularTotalGastos,
-    calcularBalance
+    calcularBalance,
+    filtrarGastos,
+    agruparGastos
 }
