@@ -91,8 +91,20 @@ Etiquetas:\n`;
 
     };
 
-    this.obtenerPeriodoAgrupacion = function(periodo){
-        
+    this.obtenerPeriodoAgrupacion = function (periodo) {
+        let salida = "";
+        const fecha = new Date(this.fecha);
+        switch (periodo) {
+            case "dia":
+                salida = `-${fecha.getDate().toString().padStart(2, "0")}`;
+            case "mes":
+                salida = `-${(fecha.getMonth() + 1).toString().padStart(2, "0")}${salida}`;
+            case "anyo":
+                salida = `${fecha.getFullYear()}${salida}`;
+                return salida;
+            default:
+                break;
+        }
     }
 
     // Inicialización
@@ -128,11 +140,11 @@ function calcularBalance() {
     return presupuesto - calcularTotalGastos();
 }
 
-function filtrarGastos(){
+function filtrarGastos() {
 
 }
 
-function agruparGastos(){
+function agruparGastos() {
 
 }
 
