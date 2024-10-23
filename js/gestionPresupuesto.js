@@ -94,12 +94,20 @@ Etiquetas:\n`;
     this.obtenerPeriodoAgrupacion = function (periodo) {
         let salida = "";
         const fecha = new Date(this.fecha);
+        // Aprovechando la casuistica de switch sin breakes, voy componiendo la cadena desde el final
+        // Dia siempre incluye mes y año
+        // Mes siempre incluye año
+        // Año tiene su return
+        // Cualquier otro caso no hace nada
         switch (periodo) {
             case "dia":
-                salida = `-${fecha.getDate().toString().padStart(2, "0")}`;
+                // Empieza la cadena por la derecha, los dias
+                salida = `-${fecha.getDate().toString().padStart(2, "0")}`; //Relleno con ceros por delante para los dias menors a 10
             case "mes":
-                salida = `-${(fecha.getMonth() + 1).toString().padStart(2, "0")}${salida}`;
+                // Obtiene el mes y añade al final el contenido anterior, si lo hay
+                salida = `-${(fecha.getMonth() + 1).toString().padStart(2, "0")}${salida}`; // Relleno con ceros por delante para los meses menores a 10
             case "anyo":
+                // Obtiene el año y añade al final el contenido anterior, si lo hay
                 salida = `${fecha.getFullYear()}${salida}`;
                 return salida;
             default:
