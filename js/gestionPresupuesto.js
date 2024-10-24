@@ -148,8 +148,26 @@ function calcularBalance() {
     return presupuesto - calcularTotalGastos();
 }
 
-function filtrarGastos() {
-
+function filtrarGastos(filtro) {
+    // Creo un filtro con cada uno de los posibles casos.
+    // Comprueba si el filtro pasado por argumento tiene cada una de las propiedades.
+    // - Si la propiedad no se ha especificado (devuelve undefined=false->se niega y se vuelve true)
+    // entonces no se crea un filtro para esa propiedad (devuelve true al conjunto del filtro).
+    // - Si la propiedad si existe (al negarlo devuelve false) se crea el filtro que podrá devolver true si coincide
+    // o false si no, descartandolo del filtro.
+    // Todo el conjunto debe devolver true para que el elemento pase el filtro.
+    let resultado = gastos.filter(gasto => {
+        return (
+            (!filtro.fechaDesde || new Date(gasto.fecha) >= Date.parse(filtro.fechaDesde)) && // La fecha del gasto es timestamp y la del filtro se parsea
+            (!filtro.fechaHasta || new Date(gasto.fecha) <= Date.parse(filtro.fechaHasta)) &&
+            (!filtro.valorMinimo || gasto.valor >= filtro.valorMinimo) &&
+            (!filtro.valorMaximo || gasto.valor <= filtro.valorMaximo) &&
+            (!filtro.descripcionContiene || gasto.descripcion.toLowerCase().includes(filtro.descripcionContiene.toLowerCase())) &&
+            // El ultimo filtro busca alguna etiqueta del filtro (some) dentro de alguna etiqueta del gasto (some) y las compara en minusculas
+            (!filtro.etiquetasTiene || filtro.etiquetasTiene.some(etiqueta => gasto.etiquetas.some(gastoEtiqueta => gastoEtiqueta.toLowerCase() == etiqueta.toLowerCase())))
+        );
+    });
+    return resultado;
 }
 
 function agruparGastos() {
