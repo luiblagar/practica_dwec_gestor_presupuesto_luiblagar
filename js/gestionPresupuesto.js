@@ -170,8 +170,19 @@ function filtrarGastos(filtro) {
     return resultado;
 }
 
-function agruparGastos() {
+function agruparGastos(periodo = "mes", etiquetas, fechaDesdeArg, fechaHastaArg) {
+    let filtro = {
+        etiquetasTiene: etiquetas,
+        fechaDesde: fechaDesdeArg,
+        // Fecha es por defecto, el formato ISO comienza con "aaaa-mm-dd", me quedo con los 10 primeros caracteres
+        fechaHasta: fechaHastaArg || new Date().toISOString().slice(0, 10)
+    };
+    if (etiquetas == []) delete filtro.etiquetasTiene; // Elimino el argumento del filtro si es una array vacia
 
+    // Obtengo todos los resultados filtrados
+    let resultado = filtrarGastos(filtro);
+    // TODO hacer la agrupación
+    return resultado;
 }
 
 // NO MODIFICAR A PARTIR DE AQUÍ: exportación de funciones y objetos creados para poder ejecutar los tests.
