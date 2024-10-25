@@ -91,6 +91,8 @@ Etiquetas:\n`;
 
     };
 
+    // Forma principal para obtener el periodo usando switch secuencial
+    // Esta forma devolverá undefined si el parametro se omite o es incorrecto
     this.obtenerPeriodoAgrupacion = function (periodo) {
         let salida = "";
         const fecha = new Date(this.fecha);
@@ -109,11 +111,40 @@ Etiquetas:\n`;
             case "anyo":
                 // Obtiene el año y añade al final el contenido anterior, si lo hay
                 salida = `${fecha.getFullYear()}${salida}`;
+                //console.log(`${periodo} -> ${salida}`);
                 return salida;
             default:
+                // La funcion devolverá undefined ya que no se ha introducido un valor correcto
                 break;
         }
     }
+
+    /*
+    // Forma alternativa usando toISOString().Slice()
+    // Esta forma devolvera un string vacío si el argumento se omite o es incorrecto
+    // Se me ocurrió mientras terminaba las siguientes funciones
+    this.obtenerPeriodoAgrupacion = function (periodo) {
+        // Se usa el formato que proporciona toISOString que empieza por "aaaa-mm-dd" y se recortará su longitud
+        // según sea el periodo establecido
+        let longitud = 0;
+        const fecha = new Date(this.fecha);
+        switch (periodo) {
+            case "dia":
+                longitud = 10; // "aaaa-mm-dd" son 10 carácteres
+                break
+            case "mes":
+                longitud = 7; // "aaaa-mm" son 7 carácteres
+                break;
+            case "anyo":
+                longitud = 4; // "aaaa" son 4 carácteres
+                break;
+            default:
+                // En caso de no introducir un valor correcto la longitud será 0 y se devolvera un string vacío
+                break;
+        }
+        //console.log(`${periodo} -> ${fecha.toISOString().slice(0, longitud)}`);
+        return fecha.toISOString().slice(0, longitud); // Recortamos la la fecha según el periodo
+    }*/
 
     // Inicialización
     this.anyadirEtiquetas(...etiquetas);
@@ -171,6 +202,7 @@ function filtrarGastos(filtro) {
 }
 
 function agruparGastos(periodo = "mes", etiquetas, fechaDesdeArg, fechaHastaArg) {
+    // Creamos un filtro inicial con los datos pasados por argumentos
     let filtro = {
         etiquetasTiene: etiquetas,
         fechaDesde: fechaDesdeArg,
@@ -180,8 +212,20 @@ function agruparGastos(periodo = "mes", etiquetas, fechaDesdeArg, fechaHastaArg)
     if (etiquetas == []) delete filtro.etiquetasTiene; // Elimino el argumento del filtro si es una array vacia
 
     // Obtengo todos los resultados filtrados
-    let resultado = filtrarGastos(filtro);
-    // TODO hacer la agrupación
+    let resultado = filtrarGastos(filtro).reduce((acc, gasto) => {
+        // Este metodo de una sola linea funciona pero es ineficiente al llamar a la función 2 veces
+        // acc[gasto.obtenerPeriodoAgrupacion(periodo)] = (acc[gasto.obtenerPeriodoAgrupacion(periodo)] || 0) + gasto.valor;
+
+        // Si guardamos en una constante el periodo filtrado la ejecución se evita llamar 2 veces a la funcion obtenerPeriodoAgrupacion
+        // reduciendo así el tiempo de ejecución. Recordemos que crea un Date() nuevo y hace operaciones de cadea, ambas acciones son costosas.
+        // Además se puede depurar mejor.
+        const periodoFiltrado = gasto.obtenerPeriodoAgrupacion(periodo);
+        // Si el periodo no existe en acc lo crea con valor 0+gasto.valor. Si no inicializara la variable me daria un error NaN al ser undefined.
+        acc[periodoFiltrado] = (acc[periodoFiltrado] || 0) + gasto.valor;
+        return acc;
+    }, {});
+
+
     return resultado;
 }
 
