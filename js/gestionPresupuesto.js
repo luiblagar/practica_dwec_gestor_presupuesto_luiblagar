@@ -217,7 +217,7 @@ function agruparGastos(periodo = "mes", etiquetas, fechaDesdeArg, fechaHastaArg)
         // acc[gasto.obtenerPeriodoAgrupacion(periodo)] = (acc[gasto.obtenerPeriodoAgrupacion(periodo)] || 0) + gasto.valor;
 
         // Si guardamos en una constante el periodo filtrado la ejecución se evita llamar 2 veces a la funcion obtenerPeriodoAgrupacion
-        // reduciendo así el tiempo de ejecución. Recordemos que crea un Date() nuevo y hace operaciones de cadea, ambas acciones son costosas.
+        // reduciendo así el tiempo de ejecución. Recordemos que crea un Date() nuevo y hace operaciones de cadena, ambas acciones son costosas.
         // Además se puede depurar mejor.
         const periodoFiltrado = gasto.obtenerPeriodoAgrupacion(periodo);
         // Si el periodo no existe en acc lo crea con valor 0+gasto.valor. Si no inicializara la variable me daria un error NaN al ser undefined.

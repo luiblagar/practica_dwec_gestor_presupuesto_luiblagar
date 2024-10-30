@@ -53,8 +53,9 @@ gestionPresupuesto.filtrarGastos({ valorMinimo: 200, etiquetasTiene: ["seguros"]
 gestionPresupuesto.filtrarGastos({ etiquetasTiene: ["comida", "transporte"], valorMaximo: 50 }).map(gasto =>
     gestionPresupuestoWeb.mostrarGastoWeb("div#listado-gastos-filtrado-4", gasto));
 
-// TODO
 // Mostrar el total de gastos agrupados por día en div#agrupacion-dia (funciones agruparGastos y mostrarGastosAgrupadosWeb)
+gestionPresupuestoWeb.mostrarGastosAgrupadosWeb("div#agrupacion-dia", gestionPresupuesto.agruparGastos("dia"), "dia");
+// TODO
 // Mostrar el total de gastos agrupados por mes en div#agrupacion-mes (funciones agruparGastos y mostrarGastosAgrupadosWeb)
 // Mostrar el total de gastos agrupados por año en div#agrupacion-anyo (funciones agruparGastos y mostrarGastosAgrupadosWeb)
 
