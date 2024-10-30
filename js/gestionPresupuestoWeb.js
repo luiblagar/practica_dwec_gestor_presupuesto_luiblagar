@@ -14,6 +14,7 @@ function mostrarGastoWeb(idElemento, gasto) {
             ${gasto.etiquetas.map(etiqueta => `<span class="gasto-etiquetas-etiqueta">${etiqueta}</span>`)}
         </div> 
     </div>`
+    //insrtAdjacentHTML añade el segundo parametro antes del final (beforeEnd) y lo interpreta como HTML
     document.querySelector(idElemento).insertAdjacentHTML("beforeEnd", salida);
 }
 

@@ -35,13 +35,25 @@ gestionPresupuestoWeb.mostrarDatoEnId("div#gastos-totales", gestionPresupuesto.c
 gestionPresupuestoWeb.mostrarDatoEnId("div#balance-total", gestionPresupuesto.calcularBalance());
 
 // Mostrar el listado completo de gastos en div#listado-gastos-completo (funciones listarGastos y mostrarGastoWeb)
-gestionPresupuesto.listarGastos().map(gasto=>gestionPresupuestoWeb.mostrarGastoWeb("div#listado-gastos-completo", gasto));
+gestionPresupuesto.listarGastos().map(gasto => gestionPresupuestoWeb.mostrarGastoWeb("div#listado-gastos-completo", gasto));
+
+// Mostrar el listado de gastos realizados en septiembre de 2021 en div#listado-gastos-filtrado-1 (funciones filtrarGastos y mostrarGastoWeb)
+gestionPresupuesto.filtrarGastos({ fechaDesde: "2021-09-01", fechaHasta: "2021-09-30" }).map(gasto =>
+    gestionPresupuestoWeb.mostrarGastoWeb("div#listado-gastos-filtrado-1", gasto));
+
+// Mostrar el listado de gastos de más de 50€ en div#listado-gastos-filtrado-2 (funciones filtrarGastos y mostrarGastoWeb)
+gestionPresupuesto.filtrarGastos({ valorMinimo: 50 }).map(gasto =>
+    gestionPresupuestoWeb.mostrarGastoWeb("div#listado-gastos-filtrado-2", gasto));
+
+// Mostrar el listado de gastos de más de 200€ con etiqueta seguros en div#listado-gastos-filtrado-3 (funciones filtrarGastos y mostrarGastoWeb)
+gestionPresupuesto.filtrarGastos({ valorMinimo: 200, etiquetasTiene: ["seguros"] }).map(gasto =>
+    gestionPresupuestoWeb.mostrarGastoWeb("div#listado-gastos-filtrado-3", gasto));
+
+// Mostrar el listado de gastos que tengan las etiquetas comida o transporte de menos de 50€ en div#listado-gastos-filtrado-4 (funciones filtrarGastos y mostrarGastoWeb)
+gestionPresupuesto.filtrarGastos({ etiquetasTiene: ["comida", "transporte"], valorMaximo: 50 }).map(gasto =>
+    gestionPresupuestoWeb.mostrarGastoWeb("div#listado-gastos-filtrado-4", gasto));
 
 // TODO
-// Mostrar el listado de gastos realizados en septiembre de 2021 en div#listado-gastos-filtrado-1 (funciones filtrarGastos y mostrarGastoWeb)
-// Mostrar el listado de gastos de más de 50€ en div#listado-gastos-filtrado-2 (funciones filtrarGastos y mostrarGastoWeb)
-// Mostrar el listado de gastos de más de 200€ con etiqueta seguros en div#listado-gastos-filtrado-3 (funciones filtrarGastos y mostrarGastoWeb)
-// Mostrar el listado de gastos que tengan las etiquetas comida o transporte de menos de 50€ en div#listado-gastos-filtrado-4 (funciones filtrarGastos y mostrarGastoWeb)
 // Mostrar el total de gastos agrupados por día en div#agrupacion-dia (funciones agruparGastos y mostrarGastosAgrupadosWeb)
 // Mostrar el total de gastos agrupados por mes en div#agrupacion-mes (funciones agruparGastos y mostrarGastosAgrupadosWeb)
 // Mostrar el total de gastos agrupados por año en div#agrupacion-anyo (funciones agruparGastos y mostrarGastosAgrupadosWeb)
