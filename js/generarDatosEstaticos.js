@@ -34,8 +34,10 @@ gestionPresupuestoWeb.mostrarDatoEnId("div#gastos-totales", gestionPresupuesto.c
 // Mostrar el balance total en div#balance-total (funciones calcularBalance y mostrarDatoEnId)
 gestionPresupuestoWeb.mostrarDatoEnId("div#balance-total", gestionPresupuesto.calcularBalance());
 
-// TODO
 // Mostrar el listado completo de gastos en div#listado-gastos-completo (funciones listarGastos y mostrarGastoWeb)
+gestionPresupuesto.listarGastos().map(gasto=>gestionPresupuestoWeb.mostrarGastoWeb("div#listado-gastos-completo", gasto));
+
+// TODO
 // Mostrar el listado de gastos realizados en septiembre de 2021 en div#listado-gastos-filtrado-1 (funciones filtrarGastos y mostrarGastoWeb)
 // Mostrar el listado de gastos de más de 50€ en div#listado-gastos-filtrado-2 (funciones filtrarGastos y mostrarGastoWeb)
 // Mostrar el listado de gastos de más de 200€ con etiqueta seguros en div#listado-gastos-filtrado-3 (funciones filtrarGastos y mostrarGastoWeb)
