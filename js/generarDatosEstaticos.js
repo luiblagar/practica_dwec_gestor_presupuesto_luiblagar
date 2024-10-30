@@ -2,7 +2,6 @@ import * as gestionPresupuesto from "./gestionPresupuesto.js";
 import * as gestionPresupuestoWeb from "./gestionPresupuestoWeb.js";
 
 // Actualizar el presupuesto a 1500€ (función actualizarPresupuesto)
-console.log("Acualiza presupuesto");
 gestionPresupuesto.actualizarPresupuesto(1500);
 
 // Mostrar el presupuesto en el div#presupuesto (funciones mostrarPresupuesto y mostrarDatoEnId)
@@ -55,7 +54,9 @@ gestionPresupuesto.filtrarGastos({ etiquetasTiene: ["comida", "transporte"], val
 
 // Mostrar el total de gastos agrupados por día en div#agrupacion-dia (funciones agruparGastos y mostrarGastosAgrupadosWeb)
 gestionPresupuestoWeb.mostrarGastosAgrupadosWeb("div#agrupacion-dia", gestionPresupuesto.agruparGastos("dia"), "dia");
-// TODO
-// Mostrar el total de gastos agrupados por mes en div#agrupacion-mes (funciones agruparGastos y mostrarGastosAgrupadosWeb)
-// Mostrar el total de gastos agrupados por año en div#agrupacion-anyo (funciones agruparGastos y mostrarGastosAgrupadosWeb)
 
+// Mostrar el total de gastos agrupados por mes en div#agrupacion-mes (funciones agruparGastos y mostrarGastosAgrupadosWeb)
+gestionPresupuestoWeb.mostrarGastosAgrupadosWeb("div#agrupacion-mes", gestionPresupuesto.agruparGastos("mes"), "mes");
+
+// Mostrar el total de gastos agrupados por año en div#agrupacion-anyo (funciones agruparGastos y mostrarGastosAgrupadosWeb)
+gestionPresupuestoWeb.mostrarGastosAgrupadosWeb("div#agrupacion-anyo", gestionPresupuesto.agruparGastos("anyo"), "anyo");

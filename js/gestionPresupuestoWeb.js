@@ -5,6 +5,7 @@ function mostrarDatoEnId(idElemento, valor) {
 }
 
 function mostrarGastoWeb(idElemento, gasto) {
+    // Se usa map().join(", ") para separar las etiquetas con comas.
     const salida = `<div class="gasto">
         <div class="gasto-descripcion">${gasto.descripcion}</div>
         <div class="gasto-fecha">${new Date(gasto.fecha).toISOString().slice(0, 10)}</div>
@@ -20,7 +21,8 @@ function mostrarGastoWeb(idElemento, gasto) {
 function mostrarGastosAgrupadosWeb(idElemento, agrup, periodo) {
     // Se formatea el periodo para su salida en la página: dia pasa a ser día y anyo pasa a ser año
     const periodoFormateado = { dia: "día", anyo: "año" }[periodo] || periodo;
-    console.log(`Periodo: ${periodoFormateado}`);
+    
+    // Se usa map().join("") para separar las claves sin generar una coma.
     let salida = `
 <div class="agrupacion">
     <h1>Gastos agrupados por ${periodoFormateado}</h1 >
