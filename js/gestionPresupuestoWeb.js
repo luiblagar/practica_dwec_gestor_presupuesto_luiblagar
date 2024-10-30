@@ -1,14 +1,14 @@
 // TODO
 
-function mostrarDatoEnId(idElemento, valor){
+function mostrarDatoEnId(idElemento, valor) {
+    return document.querySelector(idElemento).innerText = valor;
+}
+
+function mostrarGastoWeb(idElemento, gasto) {
 
 }
 
-function mostrarGastoWeb(idElemento, gasto){
-
-}
-
-function mostrarGastosAgrupadosWeb(idElemento, agrup, periodo){
+function mostrarGastosAgrupadosWeb(idElemento, agrup, periodo) {
 
 }
 
