@@ -38,7 +38,6 @@ function mostrarGastosAgrupadosWeb(idElemento, agrup, periodo) {
 }
 
 function repintar() {
-    console.log("Repintando...");
     // Mostrar el presupuesto
     mostrarDatoEnId("div#presupuesto", gestionPresupuesto.mostrarPresupuesto());
     // Mostrar los gastos totales
@@ -64,12 +63,29 @@ function actualizarPresupuestoWeb() {
     repintar();
 }
 
-actualizarpresupuesto.addEventListener("click", actualizarPresupuestoWeb);
+// Añadimos el evento clic al boton actualizarpresupuesto con un manejador de eventos
+document.getElementById("actualizarpresupuesto").addEventListener("click", actualizarPresupuestoWeb);
 
 // Funcion del boton anyadirgasto
 function nuevoGastoWeb() {
-
+    // Solicitamos la descripción del gasto
+    let descripcion = prompt("Introduce la descripción:");
+    // El valor y lo transformamos en número
+    let valor = Number(prompt("Introduce el valor:"));
+    // La fecha del gasto
+    let fecha = prompt("Introduce la fecha en formato yyy-mm-dd:");
+    // Y las etiquetas que transofrmamos en un arral con split(",")
+    let etiquetas = prompt("Introduce las etiquetas separadas por comas sin espacios:").split(",");
+    // Creamos un gasto pasando el array de etiquetas con el comando spread (...)
+    let gasto = new gestionPresupuesto.CrearGasto(descripcion, valor, fecha, ...etiquetas);
+    // Añadimos el gasto
+    gestionPresupuesto.anyadirGasto(gasto);
+    // Repintamos para que se muestren los cambios
+    repintar();
 }
+
+// Añadimos el evento clic al boton anyadirgasto con un manejador de eventos
+document.getElementById("anyadirgasto").addEventListener("click", nuevoGastoWeb);
 
 function EditarHandle() {
 
