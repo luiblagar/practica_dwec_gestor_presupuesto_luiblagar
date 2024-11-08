@@ -22,7 +22,7 @@ function mostrarGastoWeb(idElemento, gasto) {
 function mostrarGastosAgrupadosWeb(idElemento, agrup, periodo) {
     // Se formatea el periodo para su salida en la página: dia pasa a ser día y anyo pasa a ser año
     const periodoFormateado = { dia: "día", anyo: "año" }[periodo] || periodo;
-    
+
     // Se usa map().join("") para separar las claves sin generar una coma.
     let salida = `
 <div class="agrupacion">
@@ -37,29 +37,49 @@ function mostrarGastosAgrupadosWeb(idElemento, agrup, periodo) {
     document.querySelector(idElemento).insertAdjacentHTML("beforeEnd", salida);
 }
 
-function repintar(){
-
+function repintar() {
+    console.log("Repintando...");
+    // Mostrar el presupuesto
+    mostrarDatoEnId("div#presupuesto", gestionPresupuesto.mostrarPresupuesto());
+    // Mostrar los gastos totales
+    mostrarDatoEnId("div#gastos-totales", gestionPresupuesto.calcularTotalGastos());
+    // Mostrar el balance total
+    mostrarDatoEnId("div#balance-total", gestionPresupuesto.calcularBalance());
+    // Borra el contenido del listado de gastos completo...
+    document.querySelector("div#listado-gastos-completo").innerHTML = "";
+    // Y vuelve a mostrar el listado de gastos completo
+    gestionPresupuesto.listarGastos().map(gasto => mostrarGastoWeb("div#listado-gastos-completo", gasto));
+    console.log("Repintado finalizado!");
 }
 
 // Funcion del boton actualizarpresupuesto
-function actualizarPresupuestoWeb(){
+function actualizarPresupuestoWeb() {
+    // Guardamos el dato introducido por el usuario
+    let presupuestoUsuario = prompt("Introduzca el presupuesto:");
+    // Lo pasamos a número, no comprobamos si es positivo distinto de 0 ya que
+    // esa comprobación ya la hace la función gestionPresupuesto.actualizarPresupuesto()
+    presupuestoUsuario = Number(presupuestoUsuario);
+    gestionPresupuesto.actualizarPresupuesto(presupuestoUsuario);
+    // Repintamos para que se muestren los cambios
+    repintar();
+}
 
-} 
+actualizarpresupuesto.addEventListener("click", actualizarPresupuestoWeb);
 
 // Funcion del boton anyadirgasto
-function nuevoGastoWeb(){
+function nuevoGastoWeb() {
 
 }
 
-function EditarHandle(){
+function EditarHandle() {
 
 }
 
-function BorrarHandle(){
+function BorrarHandle() {
 
 }
 
-function BorraretiquetasHandle(){
+function BorraretiquetasHandle() {
 
 }
 
