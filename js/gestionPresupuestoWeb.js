@@ -1,4 +1,5 @@
 // TODO
+import * as gestionPresupuesto from "./gestionPresupuesto.js";
 
 function mostrarDatoEnId(idElemento, valor) {
     return document.querySelector(idElemento).innerHTML = valor;
@@ -34,6 +35,32 @@ function mostrarGastosAgrupadosWeb(idElemento, agrup, periodo) {
 </div > `;
 
     document.querySelector(idElemento).insertAdjacentHTML("beforeEnd", salida);
+}
+
+function repintar(){
+
+}
+
+// Funcion del boton actualizarpresupuesto
+function actualizarPresupuestoWeb(){
+
+} 
+
+// Funcion del boton anyadirgasto
+function nuevoGastoWeb(){
+
+}
+
+function EditarHandle(){
+
+}
+
+function BorrarHandle(){
+
+}
+
+function BorraretiquetasHandle(){
+
 }
 
 export {
