@@ -30,7 +30,13 @@ function mostrarGastoWeb(idElemento, gasto) {
 
     // Creo el manejador para editar
     let editarGasto = new EditarHandle(gasto);
+    // Agregamos el evento click al boton editar
     plantillaClonada.querySelector("button.gasto-editar").addEventListener("click", editarGasto);
+
+    // Creo el manejador para editar
+    let borrarGasto = new BorrarHandle(gasto);
+    // Agregamos el evento click al boton editar
+    plantillaClonada.querySelector("button.gasto-borrar").addEventListener("click", borrarGasto);
 
     // Añadir la plantillaClonada al DOM 
     document.querySelector(idElemento).appendChild(plantillaClonada);
