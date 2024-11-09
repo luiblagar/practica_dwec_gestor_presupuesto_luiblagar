@@ -87,16 +87,46 @@ function nuevoGastoWeb() {
 // Añadimos el evento clic al boton anyadirgasto con un manejador de eventos
 document.getElementById("anyadirgasto").addEventListener("click", nuevoGastoWeb);
 
-function EditarHandle() {
-
+function EditarHandle(gastoArg) {
+    this.gasto = gastoArg;
+    this.handleEvent = function (evento) {
+        // Solicitamos la descripción del gasto
+        gasto.actualizarDescripcion(prompt("Introduce la descripción:", gasto.descripcion));
+        // El valor y lo transformamos en número
+        gasto.actualizarValor(Number(prompt("Introduce el valor:", gasto.valor)));
+        // La fecha del gasto
+        gasto.actualizarFecha(prompt("Introduce la fecha en formato yyy-mm-dd:", gasto.fecha));
+        // Y las etiquetas que transofrmamos en un arral con split(",")
+        let nuevasEtiquetas = prompt("Introduce las etiquetas separadas por comas sin espacios:", gasto.etiquetas.join()).split(",");
+        // Borramos las etiquetas existentes pues no tenemos un metodo que sustituya el contenido del array
+        // similar a get/set. Para ello pasamos array de etiquetas actual
+        gasto.borrarEtiquetas(...gasto.etiquetas);
+        // Añadimos las nuevas etiquetas (que pueden ser las anteriores si no se indicó nada)
+        gasto.anyadirEtiquetas(...nuevasEtiquetas);
+        // Repintamos para que se muestren los cambios
+        repintar();
+    }
 }
 
-function BorrarHandle() {
-
+function BorrarHandle(gastoArg) {
+    this.gasto=gastoArg;
+    this.handleEvent=function(evento){
+        // Borramos el gasto con la función borrarGasto
+        gestionPresupuesto.borrarGasto(gasto,id);
+        // Repintamos para que se muestren los cambios
+        repintar();
+    }
 }
 
-function BorraretiquetasHandle() {
-
+function BorrarEtiquetasHandle(gastoArg, etiquetaArg) {
+    this.gasto=gastoArg;
+    this.etiqueta=etiquetaArg;
+    this.handleEvent=function(evento){
+        // Borramos la etiqueta pasada por parametro
+        gasto.borrarEtiquetas(etiqueta);
+        // Repintamos para que se muestren los cambios
+        repintar();
+    }
 }
 
 export {
