@@ -6,17 +6,34 @@ function mostrarDatoEnId(idElemento, valor) {
 }
 
 function mostrarGastoWeb(idElemento, gasto) {
+    // He decidido crear el la estructura mediante una plantilla que
+    // se clona e incorpora al DOM una vez se ha terminado de trabajar con ella
+    const plantilla = document.createElement("template");
     // Se usa map().join(", ") para separar las etiquetas con comas.
-    const salida = `<div class="gasto">
+    plantilla.innerHTML = `<div class="gasto">
         <div class="gasto-descripcion">${gasto.descripcion}</div>
         <div class="gasto-fecha">${new Date(gasto.fecha).toISOString().slice(0, 10)}</div>
         <div class="gasto-valor">${gasto.valor}</div>
         <div class="gasto-etiquetas">
             ${gasto.etiquetas.map(etiqueta => `<span class="gasto-etiquetas-etiqueta">${etiqueta}</span>`).join(", ")}
-        </div> 
+        </div>
+        <button class="gasto-editar" type="button">Editar</button>
+        <button class="gasto-borrar" type="button">Borrar</button>
     </div>`;
-    //insrtAdjacentHTML añade el segundo parametro antes del final (beforeEnd) y lo interpreta como HTML
-    document.querySelector(idElemento).insertAdjacentHTML("beforeEnd", salida);
+    // Antes usaba insertAdjacentHTML para incorporar la plantilla antes del final (beforeEnd) e interpretar el HTML
+    //document.querySelector(idElemento).insertAdjacentHTML("beforeEnd", plantilla);
+    // Ahora uso un template que clono para poder trabajar con el antes de incorporarlo al DOM
+
+    // Clonar el contenido de la plantilla usando cloneNode lo que crea una interpretación del HTML de la misma
+    const plantillaClonada = plantilla.content.cloneNode(true);
+    // Ahora puedo realizar operaciones sobre la plantilla sin necesidad de incorporarla al DOM previamente
+
+    // Creo el manejador para editar
+    let editarGasto = new EditarHandle(gasto);
+    plantillaClonada.querySelector("button.gasto-editar").addEventListener("click", editarGasto);
+
+    // Añadir la plantillaClonada al DOM 
+    document.querySelector(idElemento).appendChild(plantillaClonada);
 }
 
 function mostrarGastosAgrupadosWeb(idElemento, agrup, periodo) {
@@ -89,41 +106,43 @@ document.getElementById("anyadirgasto").addEventListener("click", nuevoGastoWeb)
 
 function EditarHandle(gastoArg) {
     this.gasto = gastoArg;
-    this.handleEvent = function (evento) {
+    this.handleEvent = (evento) => {
+        console.log("Inicia handleEvent de EditarHandle");
         // Solicitamos la descripción del gasto
-        gasto.actualizarDescripcion(prompt("Introduce la descripción:", gasto.descripcion));
+        this.gasto.actualizarDescripcion(prompt("Introduce la descripción:", this.gasto.descripcion));
         // El valor y lo transformamos en número
-        gasto.actualizarValor(Number(prompt("Introduce el valor:", gasto.valor)));
+        this.gasto.actualizarValor(Number(prompt("Introduce el valor:", this.gasto.valor)));
         // La fecha del gasto
-        gasto.actualizarFecha(prompt("Introduce la fecha en formato yyy-mm-dd:", gasto.fecha));
+        this.gasto.actualizarFecha(prompt('Introduce la fecha en formato "yyyy-mm-dd":', new Date(this.gasto.fecha).toISOString().slice(0, 10)));
         // Y las etiquetas que transofrmamos en un arral con split(",")
-        let nuevasEtiquetas = prompt("Introduce las etiquetas separadas por comas sin espacios:", gasto.etiquetas.join()).split(",");
+        let nuevasEtiquetas = prompt("Introduce las etiquetas separadas por comas sin espacios:", this.gasto.etiquetas.join()).split(",");
         // Borramos las etiquetas existentes pues no tenemos un metodo que sustituya el contenido del array
         // similar a get/set. Para ello pasamos array de etiquetas actual
-        gasto.borrarEtiquetas(...gasto.etiquetas);
+        this.gasto.borrarEtiquetas(...this.gasto.etiquetas);
         // Añadimos las nuevas etiquetas (que pueden ser las anteriores si no se indicó nada)
-        gasto.anyadirEtiquetas(...nuevasEtiquetas);
+        this.gasto.anyadirEtiquetas(...nuevasEtiquetas);
         // Repintamos para que se muestren los cambios
         repintar();
+        console.log("Fin handleEvent de EditarHandle");
     }
 }
 
 function BorrarHandle(gastoArg) {
-    this.gasto=gastoArg;
-    this.handleEvent=function(evento){
+    this.gasto = gastoArg;
+    this.handleEvent = (evento) => {
         // Borramos el gasto con la función borrarGasto
-        gestionPresupuesto.borrarGasto(gasto,id);
+        gestionPresupuesto.borrarGasto(this.gasto.id);
         // Repintamos para que se muestren los cambios
         repintar();
     }
 }
 
 function BorrarEtiquetasHandle(gastoArg, etiquetaArg) {
-    this.gasto=gastoArg;
-    this.etiqueta=etiquetaArg;
-    this.handleEvent=function(evento){
+    this.gasto = gastoArg;
+    this.etiqueta = etiquetaArg;
+    this.handleEvent = (evento) => {
         // Borramos la etiqueta pasada por parametro
-        gasto.borrarEtiquetas(etiqueta);
+        this.gasto.borrarEtiquetas(this.etiqueta);
         // Repintamos para que se muestren los cambios
         repintar();
     }
