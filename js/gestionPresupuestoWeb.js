@@ -28,17 +28,27 @@ function mostrarGastoWeb(idElemento, gasto) {
     const plantillaClonada = plantilla.content.cloneNode(true);
     // Ahora puedo realizar operaciones sobre la plantilla sin necesidad de incorporarla al DOM previamente
 
-    // Creo el manejador para editar
+    // Creo el manejador para editar gastos
     let editarGasto = new EditarHandle(gasto);
     // Agregamos el evento click al boton editar
     plantillaClonada.querySelector("button.gasto-editar").addEventListener("click", editarGasto);
 
-    // Creo el manejador para editar
+    // Creo el manejador para borrar gastos
     let borrarGasto = new BorrarHandle(gasto);
-    // Agregamos el evento click al boton editar
+    // Agregamos el evento click al boton borrar
     plantillaClonada.querySelector("button.gasto-borrar").addEventListener("click", borrarGasto);
 
-    // Añadir la plantillaClonada al DOM 
+    // Recorremos las etiquetas para añadir el evento click
+    plantillaClonada.querySelectorAll("span.gasto-etiquetas-etiqueta").forEach((spanEtiqueta, index) => {
+        // Obtener la etiqueta correspondiente haciendo coincidir el index de los span con el de etiquetas
+        let etiqueta = gasto.etiquetas[index];
+        // Creo el manejador para borrar etiquetas
+        let borrarEtiquetas = new BorrarEtiquetasHandle(gasto, etiqueta);
+        // Agregamos el evento click a cada etiqueta
+        spanEtiqueta.addEventListener('click', borrarEtiquetas);
+    });
+
+    // Añadir la plantillaClonada con todos los eventos al DOM
     document.querySelector(idElemento).appendChild(plantillaClonada);
 }
 
