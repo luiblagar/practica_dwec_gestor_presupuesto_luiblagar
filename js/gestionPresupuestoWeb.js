@@ -39,6 +39,11 @@ function mostrarGastoWeb(idElemento, gasto) {
     // Agregamos el evento click al boton borrar
     plantillaClonada.querySelector("button.gasto-borrar").addEventListener("click", borrarGasto);
 
+    // Creo el manejador para editar gastos con formulario
+    let editarGastoFormulario = new EditarHandleFormulario(gasto);
+    // Agregamos el evento click al boton editar
+    plantillaClonada.querySelector("button.gasto-editar-formulario").addEventListener("click", editarGastoFormulario);
+
     // Recorremos las etiquetas para añadir el evento click
     plantillaClonada.querySelectorAll("span.gasto-etiquetas-etiqueta").forEach((spanEtiqueta, index) => {
         // Obtener la etiqueta correspondiente haciendo coincidir el index de los span con el de etiquetas
@@ -139,7 +144,7 @@ function nuevoGastoWebFormulario(evento) {
         // Añadimos el gasto
         gestionPresupuesto.anyadirGasto(gasto);
         console.log(`\x1b[1;37;44;3;4m>> LOG ${new Date().toLocaleTimeString()} \x1b[0m \x1b[1;32m>>\x1b[33m 
-        SE ACEPTA EL FORMULARIO \x1b[32m<<`);
+        SE GUARDA EL GASTO \x1b[32m<<`);
         // Repintamos para que se muestren los cambios
         repintar();
         // Para no duplicar codigo y ya que no es competencia actual saber si se canceló, usamos el evento de cancelar
@@ -150,7 +155,7 @@ function nuevoGastoWebFormulario(evento) {
     formulario.addEventListener("submit", manejadorSubmit);
 
     // Creamos el manejador del boton cancelar
-    let cancelarHandle=new CancelarHandle(formulario, evento);
+    let cancelarHandle = new CancelarHandle(formulario, evento);
     // Lo asociamos al boton cancelar
     plantillaFormulario.querySelector("button.cancelar").addEventListener("click", cancelarHandle);
 
@@ -165,9 +170,9 @@ function nuevoGastoWebFormulario(evento) {
 document.getElementById("anyadirgasto-formulario").addEventListener("click", nuevoGastoWebFormulario);
 
 // Manejador del boton cancelar
-function CancelarHandle(formulario, evento) {
+function CancelarHandle(formulario, eventoCancelar) {
     this.formularioParaEliminar = formulario;
-    this.botonAnyadirGasto = evento.currentTarget;
+    this.botonAnyadirGasto = eventoCancelar.currentTarget;
     this.handleEvent = (evento) => {
         // Elimina el formulario
         this.formularioParaEliminar.remove();
@@ -221,8 +226,54 @@ function BorrarEtiquetasHandle(gastoArg, etiquetaArg) {
 }
 
 function EditarHandleFormulario(gastoArg) {
+    this.gasto = gastoArg;
     this.handleEvent = (evento) => {
+        let plantillaFormulario = document.getElementById("formulario-template").content.cloneNode(true);
+        let formulario = plantillaFormulario.querySelector("form");
 
+        // Rellenar el formulario con los datos del gasto
+        formulario.elements.descripcion.value = this.gasto.descripcion;
+        formulario.elements.valor.value = this.gasto.valor;
+        formulario.elements.fecha.value = new Date(this.gasto.fecha).toISOString().slice(0, 10);
+        formulario.elements.etiquetas.value = this.gasto.etiquetas.join();
+
+        // Manejador del evento submit
+        let manejadorSubmit = {
+            handleEvent: (eventoSubmit) => {
+                eventoSubmit.preventDefault()
+                // Leemos todos los campos del formulario
+                this.gasto.actualizarDescripcion(eventoSubmit.currentTarget.elements.descripcion.value);
+                this.gasto.actualizarValor(Number(eventoSubmit.currentTarget.elements.valor.value));
+                this.gasto.actualizarFecha(eventoSubmit.currentTarget.elements.fecha.value);
+                // Convertimos las etiquetas en un array sin espacios
+                let nuevasEtiquetas = eventoSubmit.currentTarget.elements.etiquetas.value.split(",").map(etiqueta => etiqueta.trim());
+                // Borramos las etiquetas existentes pues no tenemos un metodo que sustituya el contenido del array
+                // similar a get/set. Para ello pasamos array de etiquetas actual
+                this.gasto.borrarEtiquetas(...this.gasto.etiquetas);
+                // Añadimos las nuevas etiquetas (que pueden ser las anteriores si no se cambió nada)
+                this.gasto.anyadirEtiquetas(...nuevasEtiquetas);
+                console.log(`\x1b[1;37;44;3;4m>> LOG ${new Date().toLocaleTimeString()} \x1b[0m \x1b[1;32m>>\x1b[33m 
+            SE ACEPTA EL FORMULARIO \x1b[32m<<`);
+                // Repintamos para que se muestren los cambios
+                repintar();
+                // Para no duplicar codigo y ya que no es competencia actual saber si se canceló, usamos el evento de cancelar
+                // para eliminar el formulario una vez lo hemos usado
+                formulario.querySelector("button.cancelar").click();
+            }
+        };
+        // Lo asociamos al evento submit
+        formulario.addEventListener("submit", manejadorSubmit);
+
+        // Creamos el manejador del boton cancelar
+        let cancelarHandle = new CancelarHandle(formulario, evento);
+        // Lo asociamos al boton cancelar
+        plantillaFormulario.querySelector("button.cancelar").addEventListener("click", cancelarHandle);
+
+        // Desactivamos el boton de gasto-editar-formulario puesto que se estará mostrando el formulario
+        evento.currentTarget.disabled = true;
+
+        // Cargar el formulario en el DOM
+        evento.currentTarget.parentNode.append(plantillaFormulario);
     }
 }
 
