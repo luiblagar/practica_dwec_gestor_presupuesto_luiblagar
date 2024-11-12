@@ -19,6 +19,7 @@ function mostrarGastoWeb(idElemento, gasto) {
         </div>
         <button class="gasto-editar" type="button">Editar</button>
         <button class="gasto-borrar" type="button">Borrar</button>
+        <button class="gasto-editar-formulario" type="button">Editar (formulario)</button>
     </div>`;
     // Antes usaba insertAdjacentHTML para incorporar la plantilla antes del final (beforeEnd) e interpretar el HTML
     //document.querySelector(idElemento).insertAdjacentHTML("beforeEnd", plantilla);
@@ -127,18 +128,9 @@ function nuevoGastoWebFormulario(evento) {
     // Manejador del evento submit
     function manejadorSubmit(eventoSubmit) {
         eventoSubmit.preventDefault()
-        // TODO añadir el gasto
-        console.log(`\x1b[1;37;44;3;4m>> LOG ${new Date().toLocaleTimeString()} \x1b[0m \x1b[1;32m>>\x1b[33m 
-        SE ACEPTA EL FORMULARIO \x1b[32m<<`);
-        console.log(`\x1b[1;37;44;3;4m>> LOG ${new Date().toLocaleTimeString()} \x1b[0m \x1b[1;32m>>\x1b[33m 
-        ${eventoSubmit.currentTarget} \x1b[32m<<`);
         // Leemos todos los campos del formulario
         let descripcion = eventoSubmit.currentTarget.elements.descripcion.value;
-        console.log(`\x1b[1;37;44;3;4m>> LOG ${new Date().toLocaleTimeString()} \x1b[0m \x1b[1;32m>>\x1b[33m 
-        ${descripcion} \x1b[32m<<`);
         let valor = Number(eventoSubmit.currentTarget.elements.valor.value);
-        console.log(`\x1b[1;37;44;3;4m>> LOG ${new Date().toLocaleTimeString()} \x1b[0m \x1b[1;32m>>\x1b[33m 
-        ${valor} \x1b[32m<<`);
         let fecha = eventoSubmit.currentTarget.elements.fecha.value;
         // Convertimos las etiquetas en un array sin espacios
         let etiquetas = eventoSubmit.currentTarget.elements.etiquetas.value.split(",").map(etiqueta => etiqueta.trim());
@@ -146,6 +138,8 @@ function nuevoGastoWebFormulario(evento) {
         let gasto = new gestionPresupuesto.CrearGasto(descripcion, valor, fecha, ...etiquetas);
         // Añadimos el gasto
         gestionPresupuesto.anyadirGasto(gasto);
+        console.log(`\x1b[1;37;44;3;4m>> LOG ${new Date().toLocaleTimeString()} \x1b[0m \x1b[1;32m>>\x1b[33m 
+        SE ACEPTA EL FORMULARIO \x1b[32m<<`);
         // Repintamos para que se muestren los cambios
         repintar();
         // Para no duplicar codigo y ya que no es competencia actual saber si se canceló, usamos el evento de cancelar
@@ -155,19 +149,10 @@ function nuevoGastoWebFormulario(evento) {
     // Lo asociamos al evento submit
     formulario.addEventListener("submit", manejadorSubmit);
 
-    // Manejador del boton cancelar
-    let CancelarHandle = {
-        formularioParaEliminar: formulario,
-        botonAnyadirGasto: evento.currentTarget,
-        handleEvent(evento) {
-            // Elimina el formulario
-            this.formularioParaEliminar.remove();
-            // Activa de nuevo el boton anyadirgasto-formulario
-            this.botonAnyadirGasto.disabled = false;
-        }
-    }
+    // Creamos el manejador del boton cancelar
+    let cancelarHandle=new CancelarHandle(formulario, evento);
     // Lo asociamos al boton cancelar
-    plantillaFormulario.querySelector("button.cancelar").addEventListener("click", CancelarHandle);
+    plantillaFormulario.querySelector("button.cancelar").addEventListener("click", cancelarHandle);
 
     // Desactivamos el boton de anyadirgasto-formulario puesto que se estará mostrando el formulario
     document.getElementById("anyadirgasto-formulario").disabled = true;
@@ -178,6 +163,18 @@ function nuevoGastoWebFormulario(evento) {
 
 // Añadimos el evento clic al boton anyadirgasto-formulario con un manejador de eventos
 document.getElementById("anyadirgasto-formulario").addEventListener("click", nuevoGastoWebFormulario);
+
+// Manejador del boton cancelar
+function CancelarHandle(formulario, evento) {
+    this.formularioParaEliminar = formulario;
+    this.botonAnyadirGasto = evento.currentTarget;
+    this.handleEvent = (evento) => {
+        // Elimina el formulario
+        this.formularioParaEliminar.remove();
+        // Activa de nuevo el boton anyadirgasto-formulario
+        this.botonAnyadirGasto.disabled = false;
+    }
+}
 
 function EditarHandle(gastoArg) {
     this.gasto = gastoArg;
@@ -220,6 +217,12 @@ function BorrarEtiquetasHandle(gastoArg, etiquetaArg) {
         this.gasto.borrarEtiquetas(this.etiqueta);
         // Repintamos para que se muestren los cambios
         repintar();
+    }
+}
+
+function EditarHandleFormulario(gastoArg) {
+    this.handleEvent = (evento) => {
+
     }
 }
 
