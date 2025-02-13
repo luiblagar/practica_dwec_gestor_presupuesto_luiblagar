@@ -83,11 +83,10 @@ function repintar() {
     mostrarDatoEnId("div#gastos-totales", gestionPresupuesto.calcularTotalGastos());
     // Mostrar el balance total
     mostrarDatoEnId("div#balance-total", gestionPresupuesto.calcularBalance());
-    // Se quita esto para que se puedan mostrar los datos en el formulario de filtrado
     // Borra el contenido del listado de gastos completo...
-    //document.querySelector("div#listado-gastos-completo").innerHTML = "";
+    document.querySelector("div#listado-gastos-completo").innerHTML = "";
     // Y vuelve a mostrar el listado de gastos completo
-    //gestionPresupuesto.listarGastos().map(gasto => mostrarGastoWeb("div#listado-gastos-completo", gasto));
+    gestionPresupuesto.listarGastos().map(gasto => mostrarGastoWeb("div#listado-gastos-completo", gasto));
     console.log("Repintado finalizado!");
 }
 
@@ -311,9 +310,6 @@ function filtrarGastosWeb(eventoSubmit) {
     document.querySelector("div#listado-gastos-completo").innerHTML = "";
     // Y vuelve a mostrar el listado de gastos completo
     gastosFiltrados.map(gasto => mostrarGastoWeb("div#listado-gastos-completo", gasto));
-
-    // Repintamos para que se muestren los cambios
-    repintar();
 }
 
 // Añadimos el evento submit al formulario de filtrado
