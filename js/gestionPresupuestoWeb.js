@@ -83,10 +83,11 @@ function repintar() {
     mostrarDatoEnId("div#gastos-totales", gestionPresupuesto.calcularTotalGastos());
     // Mostrar el balance total
     mostrarDatoEnId("div#balance-total", gestionPresupuesto.calcularBalance());
+    // Se quita esto para que se puedan mostrar los datos en el formulario de filtrado
     // Borra el contenido del listado de gastos completo...
-    document.querySelector("div#listado-gastos-completo").innerHTML = "";
+    //document.querySelector("div#listado-gastos-completo").innerHTML = "";
     // Y vuelve a mostrar el listado de gastos completo
-    gestionPresupuesto.listarGastos().map(gasto => mostrarGastoWeb("div#listado-gastos-completo", gasto));
+    //gestionPresupuesto.listarGastos().map(gasto => mostrarGastoWeb("div#listado-gastos-completo", gasto));
     console.log("Repintado finalizado!");
 }
 
@@ -276,6 +277,47 @@ function EditarHandleFormulario(gastoArg) {
         evento.currentTarget.parentNode.append(plantillaFormulario);
     }
 }
+
+function filtrarGastosWeb(eventoSubmit) {
+    eventoSubmit.preventDefault();
+
+    let formulario = eventoSubmit.currentTarget;
+
+
+    // Leemos todos los campos del formulario
+    let descripcion = formulario.elements["formulario-filtrado-descripcion"].value;
+    let valorMinimo = Number(formulario.elements["formulario-filtrado-valor-minimo"].value);
+    let valorMaximo = Number(formulario.elements["formulario-filtrado-valor-maximo"].value);
+    let fechaDesde = formulario.elements["formulario-filtrado-fecha-desde"].value;
+    let fechaHasta = formulario.elements["formulario-filtrado-fecha-hasta"].value;
+    let etiquetas = formulario.elements["formulario-filtrado-etiquetas-tiene"].value;
+    
+    // Si hay etiquetas las convertimos en un array con la función transformarListadoEtiquetas
+    etiquetas = etiquetas ? gestionPresupuesto.transformarListadoEtiquetas(etiquetas) : [];
+
+    // Creamos el filtro que le pasaremos a la funcion filtrarGastos que contiene los campos del formulario
+    let filtro = {};
+    // Si hay valor en los campos los añadimos al filtro
+    if (fechaDesde) filtro.fechaDesde = fechaDesde;
+    if (fechaHasta) filtro.fechaHasta = fechaHasta;
+    if (valorMinimo) filtro.valorMinimo = valorMinimo;
+    if (valorMaximo) filtro.valorMaximo = valorMaximo;
+    if (descripcion) filtro.descripcionContiene = descripcion;
+    if (etiquetas.length > 0) filtro.etiquetasTiene = etiquetas;
+
+    // Filtramos los gastos
+    let gastosFiltrados = gestionPresupuesto.filtrarGastos(filtro);
+    // Borra el contenido del listado de gastos completo...
+    document.querySelector("div#listado-gastos-completo").innerHTML = "";
+    // Y vuelve a mostrar el listado de gastos completo
+    gastosFiltrados.map(gasto => mostrarGastoWeb("div#listado-gastos-completo", gasto));
+
+    // Repintamos para que se muestren los cambios
+    repintar();
+}
+
+// Añadimos el evento submit al formulario de filtrado
+document.getElementById("formulario-filtrado").addEventListener("submit", filtrarGastosWeb);
 
 export {
     mostrarDatoEnId,
