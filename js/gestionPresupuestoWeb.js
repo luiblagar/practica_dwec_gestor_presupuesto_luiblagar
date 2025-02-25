@@ -290,7 +290,7 @@ function filtrarGastosWeb(eventoSubmit) {
     let fechaDesde = formulario.elements["formulario-filtrado-fecha-desde"].value;
     let fechaHasta = formulario.elements["formulario-filtrado-fecha-hasta"].value;
     let etiquetas = formulario.elements["formulario-filtrado-etiquetas-tiene"].value;
-    
+
     // Si hay etiquetas las convertimos en un array con la función transformarListadoEtiquetas
     etiquetas = etiquetas ? gestionPresupuesto.transformarListadoEtiquetas(etiquetas) : [];
 
@@ -314,6 +314,35 @@ function filtrarGastosWeb(eventoSubmit) {
 
 // Añadimos el evento submit al formulario de filtrado
 document.getElementById("formulario-filtrado").addEventListener("submit", filtrarGastosWeb);
+
+function guardarGastosWeb() {
+    let gastos = gestionPresupuesto.listarGastos();
+
+    // Guardamos los gastos en el almacenamiento local
+    localStorage.setItem("GestorGastosDWEC", JSON.stringify(gastos));
+
+    console.log(`\x1b[1;37;44;3;4m>> LOG ${new Date().toLocaleTimeString()} \x1b[0m \x1b[1;32m>>\x1b[33m 
+    SE GUARDAN LOS GASTOS \x1b[32m<<`);
+}
+
+// Añadimos el evento clic al boton guardar-gastos con un manejador de eventos
+document.getElementById("guardar-gastos").addEventListener("click", guardarGastosWeb);
+
+function cargarGastosWeb() {
+    // Cargamos los gastos del almacenamiento local y si no hay ninguno creamos un array vacío
+    let gastos = JSON.parse(localStorage.getItem("GestorGastosDWEC")) || [];
+    
+    // Cargamos los gastos con la función cargarGastos
+    gestionPresupuesto.cargarGastos(gastos);
+
+    // Repintamos para que se muestren los cambios
+    repintar();
+    console.log(`\x1b[1;37;44;3;4m>> LOG ${new Date().toLocaleTimeString()} \x1b[0m \x1b[1;32m>>\x1b[33m 
+    SE CARGAN LOS GASTOS \x1b[32m<<`);
+}
+
+// Añadimos el evento clic al boton cargar-gastos con un manejador de eventos
+document.getElementById("cargar-gastos").addEventListener("click", cargarGastosWeb);
 
 export {
     mostrarDatoEnId,
