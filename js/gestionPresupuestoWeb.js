@@ -19,6 +19,7 @@ function mostrarGastoWeb(idElemento, gasto) {
         </div>
         <button class="gasto-editar" type="button">Editar</button>
         <button class="gasto-borrar" type="button">Borrar</button>
+        <button class="gasto-borrar-api" type="button">Borrar (API)</button>
         <button class="gasto-editar-formulario" type="button">Editar (formulario)</button>
     </div>`;
     // Antes usaba insertAdjacentHTML para incorporar la plantilla antes del final (beforeEnd) e interpretar el HTML
@@ -39,9 +40,15 @@ function mostrarGastoWeb(idElemento, gasto) {
     // Agregamos el evento click al boton borrar
     plantillaClonada.querySelector("button.gasto-borrar").addEventListener("click", borrarGasto);
 
+
+    // Creo el manejador para borrar gastos con API
+    let borrarGastoApi = new BorrarHandleAPI(gasto);
+    // Agregamos el evento click al boton borrar con API
+    plantillaClonada.querySelector("button.gasto-borrar-api").addEventListener("click", borrarGastoApi);
+
     // Creo el manejador para editar gastos con formulario
     let editarGastoFormulario = new EditarHandleFormulario(gasto);
-    // Agregamos el evento click al boton editar
+    // Agregamos el evento click al boton editar con formulario
     plantillaClonada.querySelector("button.gasto-editar-formulario").addEventListener("click", editarGastoFormulario);
 
     // Recorremos las etiquetas para añadir el evento click
@@ -154,6 +161,40 @@ function nuevoGastoWebFormulario(evento) {
     // Lo asociamos al evento submit
     formulario.addEventListener("submit", manejadorSubmit);
 
+    // Creamos el manejador del boton .gasto-enviar-api
+    let enviarApiHandle = {
+        handleEvent: async (eventoEnviarApi) => {
+            eventoEnviarApi.preventDefault();
+            let usuario = document.getElementById("nombre_usuario").value;
+            let url = `https://suhhtqjccd.execute-api.eu-west-1.amazonaws.com/latest/${usuario}`;
+            let datosFormulario = {
+                descripcion: formulario.elements.descripcion.value,
+                valor: Number(formulario.elements.valor.value),
+                fecha: formulario.elements.fecha.value,
+                etiquetas: formulario.elements.etiquetas.value.split(",").map(etiqueta => etiqueta.trim())
+            };
+            let respuesta = await fetch(url, {
+                method: "POST",
+                body: JSON.stringify(datosFormulario),
+                headers: { "Content-Type": "application/json" }
+            });
+            if (respuesta.ok) {
+                // Llamamos a la funcion cargarGastosApi para actualizar la lista en la página
+                cargarGastosApi();
+                // Repintamos para que se muestren los cambios
+                repintar();
+            } else {
+                alert("Error al añadir el gasto");
+            }
+            // Para no duplicar codigo y ya que no es competencia actual saber si se canceló, usamos el evento de cancelar
+            // para eliminar el formulario una vez lo hemos usado
+            formulario.querySelector("button.cancelar").click();
+        }
+    };
+
+    // Lo asociamos al boton .gasto-enviar-api
+    plantillaFormulario.querySelector("button.gasto-enviar-api").addEventListener("click", enviarApiHandle);
+
     // Creamos el manejador del boton cancelar
     let cancelarHandle = new CancelarHandle(formulario, evento);
     // Lo asociamos al boton cancelar
@@ -214,6 +255,23 @@ function BorrarHandle(gastoArg) {
     }
 }
 
+function BorrarHandleAPI(gastoArg) {
+    this.gasto = gastoArg;
+    this.handleEvent = async (evento) => {
+        let usuario = document.getElementById("nombre_usuario").value;
+        let url = `https://suhhtqjccd.execute-api.eu-west-1.amazonaws.com/latest/${usuario}/${gastoArg.gastoId}`;
+        let respuesta = await fetch(url, { method: "DELETE" });
+        if (respuesta.ok) {
+            // Llamamos a la funcion cargarGastosApi para actualizar la lista en la página
+            cargarGastosApi();
+            // Repintamos para que se muestren los cambios
+            repintar();
+        } else {
+            alert("Error al borrar el gasto");
+        }
+    }
+}
+
 function BorrarEtiquetasHandle(gastoArg, etiquetaArg) {
     this.gasto = gastoArg;
     this.etiqueta = etiquetaArg;
@@ -263,6 +321,37 @@ function EditarHandleFormulario(gastoArg) {
         };
         // Lo asociamos al evento submit
         formulario.addEventListener("submit", manejadorSubmit);
+
+        // Creamos el manejador del boton .gasto-enviar-api
+        let enviarApiHandle = {
+            handleEvent: async (eventoEnviarApi) => {
+                eventoEnviarApi.preventDefault();
+                let usuario = document.getElementById("nombre_usuario").value;
+                let url = `https://suhhtqjccd.execute-api.eu-west-1.amazonaws.com/latest/${usuario}/${this.gasto.gastoId}`;
+                let datosFormulario = {
+                    descripcion: formulario.elements.descripcion.value,
+                    valor: Number(formulario.elements.valor.value),
+                    fecha: formulario.elements.fecha.value,
+                    etiquetas: formulario.elements.etiquetas.value.split(",").map(etiqueta => etiqueta.trim())
+                };
+                let respuesta = await fetch(url, {
+                    method: "PUT",
+                    body: JSON.stringify(datosFormulario),
+                    headers: { "Content-Type": "application/json" }
+                });
+                if (respuesta.ok) {
+                    // Llamamos a la funcion cargarGastosApi para actualizar la lista en la página
+                    cargarGastosApi();
+                    // Repintamos para que se muestren los cambios
+                    repintar();
+                } else {
+                    alert("Error al actualizar el gasto");
+                }
+            }
+        };
+
+        // Lo asociamos al boton .gasto-enviar-api
+        plantillaFormulario.querySelector("button.gasto-enviar-api").addEventListener("click", enviarApiHandle);
 
         // Creamos el manejador del boton cancelar
         let cancelarHandle = new CancelarHandle(formulario, evento);
@@ -331,7 +420,7 @@ document.getElementById("guardar-gastos").addEventListener("click", guardarGasto
 function cargarGastosWeb() {
     // Cargamos los gastos del almacenamiento local y si no hay ninguno creamos un array vacío
     let gastos = JSON.parse(localStorage.getItem("GestorGastosDWEC")) || [];
-    
+
     // Cargamos los gastos con la función cargarGastos
     gestionPresupuesto.cargarGastos(gastos);
 
@@ -343,6 +432,23 @@ function cargarGastosWeb() {
 
 // Añadimos el evento clic al boton cargar-gastos con un manejador de eventos
 document.getElementById("cargar-gastos").addEventListener("click", cargarGastosWeb);
+
+async function cargarGastosApi() {
+    let usuario = document.getElementById("nombre_usuario").value;
+    let url = `https://suhhtqjccd.execute-api.eu-west-1.amazonaws.com/latest/${usuario}`;
+
+    let respuesta = await fetch(url);
+    let gastos = await respuesta.json();
+
+    // Cargamos los gastos con la función cargarGastos
+    gestionPresupuesto.cargarGastos(gastos);
+
+    // Repintamos para que se muestren los cambios
+    repintar();
+}
+
+// Añadimos el evento clic al boton cargar-gastos-api con un manejador de eventos
+document.getElementById("cargar-gastos-api").addEventListener("click", cargarGastosApi);
 
 export {
     mostrarDatoEnId,
